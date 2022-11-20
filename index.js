@@ -47,6 +47,7 @@ async function run() {
 
   const bookingCollection = client.db("doctorsPortal").collection("bookings");
   const usersCollection = client.db("doctorsPortal").collection("users");
+  const doctorssCollection = client.db("doctorsPortal").collection("doctors");
   try {
     app.get("/appointmentOptions", async (req, res) => {
       const date = req.query.date;
@@ -114,6 +115,15 @@ async function run() {
       res.status(401).send({ accessToken: " " });
     });
 
+    app.get("/appointmentSpecialty", async (req, res) => {
+      const query = {};
+      const result = await appointmentCollection
+        .find(query)
+        .project({ name: 1 })
+        .toArray();
+      res.send(result);
+    });
+
     app.get("/users", async (req, res) => {
       const query = {};
       const users = await usersCollection.find(query).toArray();
@@ -157,6 +167,18 @@ async function run() {
         updatedDoc,
         options
       );
+      res.send(result);
+    });
+
+    app.get("/doctors", async (req, res) => {
+      const query = {};
+      const doctors = await doctorssCollection.find(query).toArray();
+      res.send(doctors);
+    });
+
+    app.post("/doctors", async (req, res) => {
+      const doctor = req.body;
+      const result = await doctorssCollection.insertOne(doctor);
       res.send(result);
     });
   } finally {
