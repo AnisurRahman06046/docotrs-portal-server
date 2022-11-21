@@ -99,6 +99,13 @@ async function run() {
       res.send(bookings);
     });
 
+    app.get("/bookings/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectID(id) };
+      const booking = await bookingCollection.findOne(query);
+      res.send(booking);
+    });
+
     app.post("/bookings", async (req, res) => {
       const booking = req.body;
       const query = {
@@ -182,6 +189,24 @@ async function run() {
       );
       res.send(result);
     });
+
+    // temporary to update field on appointmentoptions
+
+    // app.get("/addprice", async (req, res) => {
+    //   const filter = {};
+    //   const options = { upsert: true };
+    //   const updatedDoc = {
+    //     $set: {
+    //       price: 99,
+    //     },
+    //   };
+    //   const result = await appointmentCollection.updateMany(
+    //     filter,
+    //     updatedDoc,
+    //     options
+    //   );
+    //   res.send(result);
+    // });
 
     app.get("/doctors", verifyJWT, verifyAdmin, async (req, res) => {
       const query = {};
